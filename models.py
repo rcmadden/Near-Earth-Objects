@@ -39,24 +39,24 @@ class NearEarthObject:
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
         """
-        # TODO: Assign information from the arguments passed to the constructor
-        # onto attributes named `designation`, `name`, `diameter`, and `hazardous`.
-        # You should coerce these values to their appropriate data type and
-        # handle any edge cases, such as a empty name being represented by `None`
-        # and a missing diameter being represented by `float('nan')`.
-        self.designation = ''
-        self.name = None
-        self.diameter = float('nan')
-        self.hazardous = False
-
-        # Create an empty initial collection of linked approaches.
         self.approaches = []
+
+        for key, value in info.items():
+            if (key) == 'name' and (value) == '':
+                setattr(self, key, None)
+            elif (key) == 'diameter' and (value) == '':
+                setattr(self, key, float('nan'))
+            else:
+                setattr(self, key, value)
 
     @property
     def fullname(self):
         """Return a representation of the full name of this NEO."""
         # TODO: Use self.designation and self.name to build a fullname for this object.
-        return ''
+        if self.name == None:
+            return self.designation
+            
+        return 'f{self.designation} {self.name}'
 
     def __str__(self):
         """Return `str(self)`."""
