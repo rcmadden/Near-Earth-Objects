@@ -44,8 +44,16 @@ class NearEarthObject:
         for key, value in info.items():
             if (key) == 'name' and (value) == '':
                 setattr(self, key, None)
-            elif (key) == 'diameter' and (value) == '':
-                setattr(self, key, float('nan'))
+            elif (key) == 'diameter':
+                if (value) == '':
+                    setattr(self, key, float('nan'))
+                else:
+                    setattr(self, key, float(value))
+            elif (key) == 'hazardous':
+                if (value) == 'Y':
+                    setattr(self, key, True)
+                else:
+                    setattr(self, key, False)
             else:
                 setattr(self, key, value)
 
@@ -55,15 +63,20 @@ class NearEarthObject:
         # TODO: Use self.designation and self.name to build a fullname for this object.
         if self.name == None:
             return self.designation
-            
-        return 'f{self.designation} {self.name}'
+
+        return f"{self.designation} ({self.name})"
 
     def __str__(self):
         """Return `str(self)`."""
         # TODO: Use this object's attributes to return a human-readable string representation.
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
-        return f"A NearEarthObject ..."
+        if self.hazardous == True:
+            hazard_staus = 'is poteintially hazardous'
+        else: 
+            hazard_staus = 'is not likely hazardous'
+        # return f"{self.designation} fullname ({self.fullname})  has a diameter of {self.diameter:.3f} km and {hazard_staus} neo: {self.neo}"
+        return f"NEO {self.fullname} has a diameter of {self.diameter:.3f} km and {hazard_staus}."
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
@@ -95,13 +108,30 @@ class CloseApproach:
         # onto attributes named `_designation`, `time`, `distance`, and `velocity`.
         # You should coerce these values to their appropriate data type and handle any edge cases.
         # The `cd_to_datetime` function will be useful.
-        self._designation = ''
         self.time = None  # TODO: Use the cd_to_datetime function for this attribute.
-        self.distance = 0.0
-        self.velocity = 0.0
 
-        # Create an attribute for the referenced NEO, originally None.
         self.neo = None
+
+        for key, value in info.items():
+            if (key) == 'time' and (value) == '':
+                setattr(self, key, None)
+            elif (key) == 'time':
+                setattr(self, key, cd_to_datetime(value))
+            elif (key) == 'distance':
+                if (value) == '':
+                    setattr(self, key, 0.0)
+                else:
+                    setattr(self, key, float(value))
+                    # setattr(self, key, round(float(value), 2))
+            elif (key) == 'velocity':
+                if (value) == '':
+                    setattr(self, key, 0.0)
+                else:
+                    setattr(self, key, float(value))
+                    # setattr(self, key, round(float(value),2))
+            else:
+                setattr(self, key, value)
+
 
     @property
     def time_str(self):
@@ -119,14 +149,14 @@ class CloseApproach:
         # TODO: Use this object's `.time` attribute and the `datetime_to_str` function to
         # build a formatted representation of the approach time.
         # TODO: Use self.designation and self.name to build a fullname for this object.
-        return ''
+        return datetime_to_str(self.time)
 
     def __str__(self):
         """Return `str(self)`."""
         # TODO: Use this object's attributes to return a human-readable string representation.
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
-        return f"A CloseApproach ..."
+        return f"On {self.time_str}, '{self._designation}' approaches Earth at a distance of {self.distance:.2f} au and a velocity of {self.velocity:.2f} km/s."
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
