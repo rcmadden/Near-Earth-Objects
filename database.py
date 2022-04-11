@@ -60,25 +60,24 @@ class NEODatabase:
         :return: The `NearEarthObject` with the desired primary designation, or `None`.
         """
         # TODO: Fetch an NEO by its primary designation.
+        neo_by_designation = '' # should there be only one
+        approaches_by_designation = []
         for i in range(len(self._neos)):
             if self._neos[i].designation == designation:
-                for x in range(len(self._approaches)):
-                    # if x._designation == self._neos[i].designation:
-                    if self._approaches[x]._designation == self._neos[i].designation:
-                        # self._neos[i].approaches.append(x)
-                        self._neos[i].approaches.append(self._approaches[x])
+                neo_by_designation = self._neos[i]
+        
+        for x in range(len(self._approaches)):
+            if self._approaches[x]._designation == designation:
+                approaches_by_designation.append(self._approaches[x])
 
-                        self._approaches[x].neo = self._neos[i]
- 
-                        # print('self._neos[',i,']: ', self._neos[i])
-                        # print('self._approaches[',x,'].neo: ', self._approaches[x].neo)
-                        # return self._neos[i]    
-                # return self._neos[i]
-                # print('self._neos[',i,']: ', self._neos[i])
-                # print('self._approaches[',x,'].neo: ', self._approaches[x].neo, 'self._neos[',i,']',self._neos[i])
-                return self._neos[i]
+        if neo_by_designation=='' or neo_by_designation == None:
+           return None
 
-        return None
+        neo_by_designation.approaches = approaches_by_designation
+        for i in range(len(approaches_by_designation)):
+            approaches_by_designation[i].neo = neo_by_designation
+        return neo_by_designation
+        
 
     def get_neo_by_name(self, name):
         """Find and return an NEO by its name.
@@ -94,6 +93,8 @@ class NEODatabase:
         :param name: The name, as a string, of the NEO to search for.
         :return: The `NearEarthObject` with the desired name, or `None`.
         """
+
+        
         # TODO: Fetch an NEO by its name.
         for i in range(len(self._neos)):
             if self._neos[i].name == name:
@@ -110,6 +111,7 @@ class NEODatabase:
                         # print(self._approaches[x].neo) #NEO 1036 (Ganymed) has a diameter of 37.675 km and is not likely hazardous.
                         # print(self._neos[i]) #NEO 1036 (Ganymed) has a diameter of 37.675 km and is not likely hazardous.
                         # print(self._neos[i].approaches) # CloseApproach(time='1911-10-15 19:16', distance=0.38, velocity=17.09, neo=NearEarthObject(designation='1036', name='Ganymed', diameter=37.675, hazardous=False)),
+                        # TODO: python3 -m unittest --verbose tests.test_extract tests.test_database
                         # print('self._neos[',i,']: ', self._neos[i])
                         # print('self._approaches[',x,'].neo: ', self._approaches[x].neo)
                         # return self._neos[i]
@@ -135,7 +137,6 @@ class NEODatabase:
         self.filters = filters
 
         for approach in self._approaches:
-            # print(approach.time)
             if self.filters['date'] and self.filters['date'] != datetime.date(approach.time):
                 continue
             if self.filters['start_date'] and self.filters['start_date'] >= datetime.date(approach.time):
