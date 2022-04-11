@@ -109,7 +109,17 @@ def create_filters(
     :return: A collection of filters for use with `query`.
     """
     # TODO: Decide how you will represent your filters.
-    return ()
+    return dict(date=date,
+                start_date=start_date,
+                end_date=end_date,
+                distance_min=distance_min,
+                distance_max=distance_max,
+                velocity_min=velocity_min,
+                velocity_max=velocity_max,
+                diameter_min=diameter_min,
+                diameter_max=diameter_max,
+                hazardous=hazardous)
+
 
 
 def limit(iterator, n=None):

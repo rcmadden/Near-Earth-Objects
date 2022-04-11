@@ -60,11 +60,22 @@ class NEODatabase:
         :return: The `NearEarthObject` with the desired primary designation, or `None`.
         """
         # TODO: Fetch an NEO by its primary designation.
-
         for i in range(len(self._neos)):
             if self._neos[i].designation == designation:
-                # ELABORATE only add approaches for mathches
-                self._neos[i].approaches = ([x for x in self._approaches if x._designation == self._neos[i].designation])
+                for x in range(len(self._approaches)):
+                    # if x._designation == self._neos[i].designation:
+                    if self._approaches[x]._designation == self._neos[i].designation:
+                        # self._neos[i].approaches.append(x)
+                        self._neos[i].approaches.append(self._approaches[x])
+
+                        self._approaches[x].neo = self._neos[i]
+ 
+                        # print('self._neos[',i,']: ', self._neos[i])
+                        # print('self._approaches[',x,'].neo: ', self._approaches[x].neo)
+                        # return self._neos[i]    
+                # return self._neos[i]
+                # print('self._neos[',i,']: ', self._neos[i])
+                # print('self._approaches[',x,'].neo: ', self._approaches[x].neo, 'self._neos[',i,']',self._neos[i])
                 return self._neos[i]
 
         return None
@@ -86,8 +97,22 @@ class NEODatabase:
         # TODO: Fetch an NEO by its name.
         for i in range(len(self._neos)):
             if self._neos[i].name == name:
-                # only add approaches for mathches
-                self._neos[i].approaches = ([x for x in self._approaches if x._designation == self._neos[i].designation])
+                # for x  in self._approaches:
+                for x in range(len(self._approaches)):
+                    
+                    # if x._designation == self._neos[i].designation:
+                    if self._approaches[x]._designation == self._neos[i].designation:
+                        # self._neos[i].approaches.append(x)
+                        self._neos[i].approaches.append(self._approaches[x])
+                        # x.neo = self._neos[i].name
+                        self._approaches[x].neo = self._neos[i]
+                        # print(self._approaches[x]) # On 1911-10-15 19:16, '1036 (Ganymed)' approaches Earth at a distance of 0.38 au and a velocity of 17.09 km/s.
+                        # print(self._approaches[x].neo) #NEO 1036 (Ganymed) has a diameter of 37.675 km and is not likely hazardous.
+                        # print(self._neos[i]) #NEO 1036 (Ganymed) has a diameter of 37.675 km and is not likely hazardous.
+                        # print(self._neos[i].approaches) # CloseApproach(time='1911-10-15 19:16', distance=0.38, velocity=17.09, neo=NearEarthObject(designation='1036', name='Ganymed', diameter=37.675, hazardous=False)),
+                        # print('self._neos[',i,']: ', self._neos[i])
+                        # print('self._approaches[',x,'].neo: ', self._approaches[x].neo)
+                        # return self._neos[i]
                 return self._neos[i]
 
         return None
@@ -108,45 +133,44 @@ class NEODatabase:
         """
         # TODO: Generate `CloseApproach` objects that match all of the filters.
         self.filters = filters
-        print(self._approaches)
-        for approach in self._approaches[:5]:
-            yield approach 
-        # for approach in self._approaches:
-        #     if self.filters['date'] and self.filters['date'] != datetime.strptime(approach.time, "%Y-%b-%d %H:%M").date():
-        #         continue
-        #     if self.filters['start_date'] and self.filters['start_date'] >= datetime.strptime(approach.time, "%Y-%b-%d %H:%M").date():
-        #         continue            
-        #     if self.filters['end_date'] and (self.filters['end_date'] <= (datetime.strptime(approach.time, "%Y-%b-%d %H:%M").date())):
-        #         continue 
-        #     if self.filters['distance_min'] and not self.filters['distance_min'] <= float(approach.distance):
-        #         continue
-        #     if self.filters['distance_max'] and not self.filters['distance_max'] >= float(approach.distance):
-        #         continue
-        #     if self.filters['velocity_min'] and not self.filters['velocity_min'] <= float(approach.velocity):
-        #         continue
-        #     if self.filters['velocity_max'] and not self.filters['velocity_max'] >= float(approach.velocity):
-        #         continue 
+
+        for approach in self._approaches:
+            # print(approach.time)
+            if self.filters['date'] and self.filters['date'] != datetime.date(approach.time):
+                continue
+            if self.filters['start_date'] and self.filters['start_date'] >= datetime.date(approach.time):
+                continue            
+            if self.filters['end_date'] and (self.filters['end_date'] <= datetime.date(approach.time)):
+                continue 
+            if self.filters['distance_min'] and not self.filters['distance_min'] <= float(approach.distance):
+                continue
+            if self.filters['distance_max'] and not self.filters['distance_max'] >= float(approach.distance):
+                continue
+            if self.filters['velocity_min'] and not self.filters['velocity_min'] <= float(approach.velocity):
+                continue
+            if self.filters['velocity_max'] and not self.filters['velocity_max'] >= float(approach.velocity):
+                continue 
             
-        #     # ELABORATE assign the aproaches['neo'] key to the matching neo['designation']
-        #     # carefull there are 400k self._approaches so get the filtered set first 
-        #     # need the neo key for the 3 filters that follow
-        #     approach_neo = ([x for x in self._neos if x.designation == approach._designation])
-        #     # list comprehension (instead of dict comprehension) to avoid TypeError: unhashable type: 'dict'
-        #     approach['neo'] = approach_neo[0]
-        #     # print(approach['neo'])
-        #     if self.filters['diameter_min'] and approach['neo'].get('diameter') != '':
-        #         if not (self.filters['diameter_min'] <= float(approach['neo']['diameter'])):
-        #             continue  
+            # ELABORATE assign the aproaches.neo key to the matching neo['designation']
+            # carefull there are 400k self._approaches so get the filtered set first 
+            # need the neo key for the 3 filters that follow
+            approach_neo = ([x for x in self._neos if x.designation == approach._designation])
+            # list comprehension (instead of dict comprehension) to avoid TypeError: unhashable type: 'dict'
+            approach.neo = approach_neo[0]
+            # print(approach.neo)
+            if self.filters['diameter_min'] and approach.neo.get.diameter != '':
+                if not (self.filters['diameter_min'] <= float(approach.neo.diameter)):
+                    continue  
 
-        #     if self.filters['diameter_max'] and approach['neo'].get('diameter') != '':
-        #         if not (self.filters['diameter_max'] >= float(approach['neo']['diameter'])):
-        #             continue  
+            if self.filters['diameter_max'] and approach.neo.get.diameter != '':
+                if not (self.filters['diameter_max'] >= float(approach.neo.diameter)):
+                    continue  
 
-        #     if self.filters.get('hazardous')==True and not approach['neo']['hazardous'] == 'Y':
-        #         continue  
-        #     if self.filters.get('hazardous')==False and not approach['neo']['hazardous'] == 'N':
-        #         continue   
+            if self.filters.get('hazardous')==True and not approach.neo.hazardous == 'Y':
+                continue  
+            if self.filters.get('hazardous')==False and not approach.neo.hazardous == 'N':
+                continue   
 
-        #     yield approach
+            yield approach
         # for approach in self._approaches:
-        #     yield approach
+            # yield approach
