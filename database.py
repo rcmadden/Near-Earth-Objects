@@ -60,7 +60,7 @@ class NEODatabase:
         :return: The `NearEarthObject` with the desired primary designation, or `None`.
         """
         # TODO: Fetch an NEO by its primary designation.
-        neo_by_designation = '' # should there be only one
+        neo_by_designation = ''
         approaches_by_designation = []
         for i in range(len(self._neos)):
             if self._neos[i].designation == designation:
