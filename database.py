@@ -39,28 +39,17 @@ class NEODatabase:
         :param neos: A collection of `NearEarthObject`s.
         :param approaches: A collection of `CloseApproach`es.
         """
-        self._neos = neos #23,967
-        self._approaches = approaches #23,424
+        self._neos = neos #distinct 23,967
+        self._approaches = approaches #distinct 23,424
         # TODO: What additional auxiliary data structures will be useful?
 
         # TODO: Link together the NEOs and their close approaches.
-        for i in range(len(self._neos)):
-            for x in range(len(self._approaches)):
+        # TODO: Uncomment to get un-filtered set for submission/comment for running
+        for x in range(len(self._approaches)):
+            for i in range(len(self._neos)):
                 if self._neos[i].designation == self._approaches[x]._designation:
                     self._neos[i].approaches.append(self._approaches[x])
                     self._approaches[x].neo = self._neos[i]
-        
-        # for x in range(len(self._approaches)):
-        #     if self._approaches[x]._designation in self._neos.designation:
-        #         approaches_with_neo.append(self._neos[i].desination)
-
-        # if neo_by_designation=='' or neo_by_designation == None:
-        #    return None
-
-        # neo_by_designation.approaches = approaches_by_designation
-        # for i in range(len(approaches_by_designation)):
-        #     approaches_by_designation[i].neo = neo_by_designation
-        # return neo_by_designation
 
 
     def get_neo_by_designation(self, designation):
@@ -78,21 +67,23 @@ class NEODatabase:
         """
         # TODO: Fetch an NEO by its primary designation.
         neo_by_designation = ''
-        approaches_by_designation = []
+        #COMMENT
+        # approaches_by_designation = []
         for i in range(len(self._neos)):
             if self._neos[i].designation == designation:
                 neo_by_designation = self._neos[i]
-        
+        # COMMENT
         # for x in range(len(self._approaches)):
         #     if self._approaches[x]._designation == designation:
         #         approaches_by_designation.append(self._approaches[x])
 
         if neo_by_designation=='' or neo_by_designation == None:
            return None
-
+        # COMMENT
         # neo_by_designation.approaches = approaches_by_designation
         # for i in range(len(approaches_by_designation)):
         #     approaches_by_designation[i].neo = neo_by_designation
+
         return neo_by_designation
         
 
@@ -114,21 +105,21 @@ class NEODatabase:
         
         # TODO: Fetch an NEO by its name.
         neo_by_name = ''
-        approaches_by_name = []
+        # approaches_by_name = []
         for i in range(len(self._neos)):
             if self._neos[i].name == name:
                 neo_by_name = self._neos[i]
-        
+        #COMMENT
         # for x in range(len(self._approaches)):
         #     if self._approaches[x]._designation == neo_by_name.designation:
         #         approaches_by_name.append(self._approaches[x])
 
         if neo_by_name=='' or neo_by_name == None:
            return None
-
+        #COMMENT
         # neo_by_name.approaches = approaches_by_name
         # for i in range(len(approaches_by_name)):
-            # approaches_by_name[i].neo = neo_by_name
+        #     approaches_by_name[i].neo = neo_by_name
     
 
         return neo_by_name        
@@ -153,9 +144,10 @@ class NEODatabase:
         for approach in self._approaches:
             if self.filters['date'] and self.filters['date'] != datetime.date(approach.time):
                 continue
-            if self.filters['start_date'] and self.filters['start_date'] >= datetime.date(approach.time):
+            # if self.filters['start_date'] and (self.filters['start_date'] >= datetime.date(approach.time)):
+            if self.filters['start_date'] and not (self.filters['start_date'] <= datetime.date(approach.time)):
                 continue            
-            if self.filters['end_date'] and (self.filters['end_date'] <= datetime.date(approach.time)):
+            if self.filters['end_date'] and not (self.filters['end_date'] >= datetime.date(approach.time)):
                 continue 
             if self.filters['distance_min'] and not self.filters['distance_min'] <= float(approach.distance):
                 continue
@@ -169,23 +161,22 @@ class NEODatabase:
             # ELABORATE assign the aproaches.neo key to the matching neo['designation']
             # carefull there are 400k self._approaches so get the filtered set first 
             # need the neo key for the 3 filters that follow
-            approach_neo = ([x for x in self._neos if x.designation == approach._designation])
+            # approach_neo = ([x for x in self._neos if x.designation == approach._designation])
             # list comprehension (instead of dict comprehension) to avoid TypeError: unhashable type: 'dict'
-            approach.neo = approach_neo[0]
+            # approach.neo = approach_neo[0]
             # print(approach.neo)
-            if self.filters['diameter_min'] and approach.neo.get.diameter != '':
+            if self.filters['diameter_min'] and approach.neo.diameter != '':
                 if not (self.filters['diameter_min'] <= float(approach.neo.diameter)):
                     continue  
 
-            if self.filters['diameter_max'] and approach.neo.get.diameter != '':
+            if self.filters['diameter_max'] and approach.neo.diameter != '':
                 if not (self.filters['diameter_max'] >= float(approach.neo.diameter)):
                     continue  
 
-            if self.filters.get('hazardous')==True and not approach.neo.hazardous == 'Y':
+            if self.filters.get('hazardous')==True and not approach.neo.hazardous == True:
                 continue  
-            if self.filters.get('hazardous')==False and not approach.neo.hazardous == 'N':
+            if self.filters.get('hazardous')==False and not approach.neo.hazardous == False:
                 continue   
 
             yield approach
-        # for approach in self._approaches:
-            # yield approach
+
