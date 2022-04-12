@@ -39,12 +39,29 @@ class NEODatabase:
         :param neos: A collection of `NearEarthObject`s.
         :param approaches: A collection of `CloseApproach`es.
         """
-        self._neos = neos
-        self._approaches = approaches
-
+        self._neos = neos #23,967
+        self._approaches = approaches #23,424
         # TODO: What additional auxiliary data structures will be useful?
 
         # TODO: Link together the NEOs and their close approaches.
+        for i in range(len(self._neos)):
+            for x in range(len(self._approaches)):
+                if self._neos[i].designation == self._approaches[x]._designation:
+                    self._neos[i].approaches.append(self._approaches[x])
+                    self._approaches[x].neo = self._neos[i]
+        
+        # for x in range(len(self._approaches)):
+        #     if self._approaches[x]._designation in self._neos.designation:
+        #         approaches_with_neo.append(self._neos[i].desination)
+
+        # if neo_by_designation=='' or neo_by_designation == None:
+        #    return None
+
+        # neo_by_designation.approaches = approaches_by_designation
+        # for i in range(len(approaches_by_designation)):
+        #     approaches_by_designation[i].neo = neo_by_designation
+        # return neo_by_designation
+
 
     def get_neo_by_designation(self, designation):
         """Find and return an NEO by its primary designation.
@@ -66,16 +83,16 @@ class NEODatabase:
             if self._neos[i].designation == designation:
                 neo_by_designation = self._neos[i]
         
-        for x in range(len(self._approaches)):
-            if self._approaches[x]._designation == designation:
-                approaches_by_designation.append(self._approaches[x])
+        # for x in range(len(self._approaches)):
+        #     if self._approaches[x]._designation == designation:
+        #         approaches_by_designation.append(self._approaches[x])
 
         if neo_by_designation=='' or neo_by_designation == None:
            return None
 
-        neo_by_designation.approaches = approaches_by_designation
-        for i in range(len(approaches_by_designation)):
-            approaches_by_designation[i].neo = neo_by_designation
+        # neo_by_designation.approaches = approaches_by_designation
+        # for i in range(len(approaches_by_designation)):
+        #     approaches_by_designation[i].neo = neo_by_designation
         return neo_by_designation
         
 
@@ -96,28 +113,25 @@ class NEODatabase:
 
         
         # TODO: Fetch an NEO by its name.
+        neo_by_name = ''
+        approaches_by_name = []
         for i in range(len(self._neos)):
             if self._neos[i].name == name:
-                # for x  in self._approaches:
-                for x in range(len(self._approaches)):
-                    
-                    # if x._designation == self._neos[i].designation:
-                    if self._approaches[x]._designation == self._neos[i].designation:
-                        # self._neos[i].approaches.append(x)
-                        self._neos[i].approaches.append(self._approaches[x])
-                        # x.neo = self._neos[i].name
-                        self._approaches[x].neo = self._neos[i]
-                        # print(self._approaches[x]) # On 1911-10-15 19:16, '1036 (Ganymed)' approaches Earth at a distance of 0.38 au and a velocity of 17.09 km/s.
-                        # print(self._approaches[x].neo) #NEO 1036 (Ganymed) has a diameter of 37.675 km and is not likely hazardous.
-                        # print(self._neos[i]) #NEO 1036 (Ganymed) has a diameter of 37.675 km and is not likely hazardous.
-                        # print(self._neos[i].approaches) # CloseApproach(time='1911-10-15 19:16', distance=0.38, velocity=17.09, neo=NearEarthObject(designation='1036', name='Ganymed', diameter=37.675, hazardous=False)),
-                        # TODO: python3 -m unittest --verbose tests.test_extract tests.test_database
-                        # print('self._neos[',i,']: ', self._neos[i])
-                        # print('self._approaches[',x,'].neo: ', self._approaches[x].neo)
-                        # return self._neos[i]
-                return self._neos[i]
+                neo_by_name = self._neos[i]
+        
+        # for x in range(len(self._approaches)):
+        #     if self._approaches[x]._designation == neo_by_name.designation:
+        #         approaches_by_name.append(self._approaches[x])
 
-        return None
+        if neo_by_name=='' or neo_by_name == None:
+           return None
+
+        # neo_by_name.approaches = approaches_by_name
+        # for i in range(len(approaches_by_name)):
+            # approaches_by_name[i].neo = neo_by_name
+    
+
+        return neo_by_name        
 
     def query(self, filters=()):
         """Query close approaches to generate those that match a collection of filters.
