@@ -28,8 +28,27 @@ def write_to_csv(results, filename):
         'datetime_utc', 'distance_au', 'velocity_km_s',
         'designation', 'name', 'diameter_km', 'potentially_hazardous'
     )
-    # TODO: Write the results to a CSV file, following the specification in the instructions.
+    field_names = {'time': 'datetime_utc', 'distance': 'distance_au', 'velocity': 'velocity_km_s', '_designation': 'designation', 'name': 'name', 'diameter': 'diameter_km', 'hazardous': 'potentially_hazardous'}
 
+    # field_names = (
+    #     'time', 'distance', 'velocity',
+    #     '_designation', 'name', 'diameter', 'hazardous', 'neo'
+    # )
+    # if results == None or results == '':
+    if not results:
+        with open(filename, 'w') as csv_outfile:
+            writer = csv.writer(csv_outfile)
+            writer.writerow(fieldnames)
+
+    # TODO: Write the results to a CSV file, following the specification in the instructions.
+    # https://stackoverflow.com/questions/59291949/change-column-headers-using-dictwriter
+    with open(filename, 'w', newline='') as csv_outfile:
+        writer = csv.DictWriter(csv_outfile, fieldnames=field_names, extrasaction='ignore')
+        writer.writerow(field_names)
+
+        for elem in results:
+            print(elem.__dict__)
+            writer.writerow(elem.__dict__)
 
 def write_to_json(results, filename):
     """Write an iterable of `CloseApproach` objects to a JSON file.
@@ -42,4 +61,20 @@ def write_to_json(results, filename):
     :param results: An iterable of `CloseApproach` objects.
     :param filename: A Path-like object pointing to where the data should be saved.
     """
+
+    from io import StringIO
+    io = StringIO()
     # TODO: Write the results to a JSON file, following the specification in the instructions.
+    json_list = []
+    with open(filename, 'w', encoding='utf8') as json_outfile:
+        for elem in results:
+            # json_outfile.write(json.dumps(elem.__dict__, default=str))
+            # json.dump(elem.__dict__,json_outfile, ensure_ascii=False, default=str)
+            # json.dump(elem.__dict__, json_outfile, default=str, separators=(',', ':'))
+            
+            # jsonString = json.dumps(elem.__dict__,default=str)
+            # json_outfile.write(jsonString)
+            json_list.append(elem.__dict__)
+        json.dump(json_list, json_outfile, indent=4, default=str)
+
+
