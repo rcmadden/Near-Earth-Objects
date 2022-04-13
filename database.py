@@ -105,7 +105,7 @@ class NEODatabase:
         
         # TODO: Fetch an NEO by its name.
         neo_by_name = ''
-        # approaches_by_name = []
+        approaches_by_name = []
         for i in range(len(self._neos)):
             if self._neos[i].name == name:
                 neo_by_name = self._neos[i]
