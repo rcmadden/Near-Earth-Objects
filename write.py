@@ -61,9 +61,11 @@ def write_to_json(results, filename):
     :param results: An iterable of `CloseApproach` objects.
     :param filename: A Path-like object pointing to where the data should be saved.
     """
+    fieldnames = (
+        'datetime_utc', 'neo', 'distance_au', 'velocity_km_s',
+        'designation', 'name', 'diameter_km', 'potentially_hazardous'
+    )
 
-    from io import StringIO
-    io = StringIO()
     # TODO: Write the results to a JSON file, following the specification in the instructions.
     json_list = []
     with open(filename, 'w', encoding='utf8') as json_outfile:
@@ -74,7 +76,16 @@ def write_to_json(results, filename):
             
             # jsonString = json.dumps(elem.__dict__,default=str)
             # json_outfile.write(jsonString)
+            
             json_list.append(elem.__dict__)
-        json.dump(json_list, json_outfile, indent=4, default=str)
+        # rename dictionary keys
+        # print(json_list)
+        new_dict = []
+        d1 = dict(zip(list(json_list[0].keys()), fieldnames))
+        for i in range(len(json_list)):
+            # d1 = dict(zip(list(json_list[i].keys()), fieldnames))
+            new_dict.append({d1[old_key]: value for old_key, value in json_list[i].items()})
+
+        json.dump(new_dict, json_outfile, indent=4, default=str)
 
 
