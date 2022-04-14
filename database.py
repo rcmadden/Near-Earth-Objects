@@ -117,7 +117,7 @@ class NEODatabase:
         :param filters: A collection of filters capturing user-specified criteria.
         :return: A stream of matching `CloseApproach` objects.
         """
-        # Generate `CloseApproach` objects that match all of the filters.
+        # ELABORATE: Generate `CloseApproach` objects that match all of the filters 
         self.filters = filters
 
         for approach in self._approaches:
@@ -135,19 +135,15 @@ class NEODatabase:
                 continue
             if self.filters['velocity_max'] and not self.filters['velocity_max'] >= float(approach.velocity):
                 continue 
-            
             if self.filters['diameter_min'] and approach.neo.diameter != '':
                 if not (self.filters['diameter_min'] <= float(approach.neo.diameter)):
                     continue  
-
             if self.filters['diameter_max'] and approach.neo.diameter != '':
                 if not (self.filters['diameter_max'] >= float(approach.neo.diameter)):
                     continue  
-
             if self.filters.get('hazardous')==True and not approach.neo.hazardous == True:
                 continue  
             if self.filters.get('hazardous')==False and not approach.neo.hazardous == False:
                 continue   
             
             yield approach
-

@@ -39,6 +39,7 @@ class NearEarthObject:
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
         """
+        # ELABORATE: assigns default values for some keys to coerce to required data types
         self.approaches = []
 
         for key, value in info.items():
@@ -67,7 +68,7 @@ class NearEarthObject:
 
     def __str__(self):
         """Return `str(self)`."""
-        # Use this object's attributes to return a human-readable string representation.
+        # ELABAORATE: Use this object's attributes to return a human-readable string representation.
         if self.hazardous == True:
             hazard_staus = 'is poteintially hazardous'
         else: 

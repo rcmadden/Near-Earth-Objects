@@ -35,8 +35,7 @@ def write_to_csv(results, filename):
             writer = csv.writer(csv_outfile)
             writer.writerow(fieldnames)
 
-    # TODO: Write the results to a CSV file, following the specification in the instructions.
-    # https://stackoverflow.com/questions/59291949/change-column-headers-using-dictwriter
+    # ELABORATE: https://stackoverflow.com/questions/59291949/change-column-headers-using-dictwriter
     with open(filename, 'w', newline='') as csv_outfile:
         writer = csv.DictWriter(csv_outfile, fieldnames=field_names, extrasaction='ignore')
         writer.writerow(field_names)
@@ -60,38 +59,8 @@ def write_to_json(results, filename):
         'designation', 'name', 'diameter_km', 'potentially_hazardous'
     )
 
-    # TODO: Write the results to a JSON file, following the specification in the instructions.
     json_list = []
     with open(filename, 'w') as json_outfile:
-        # for elem in results:
-            # json_outfile.write(json.dumps(elem.__dict__, default=str))
-            # json.dump(elem.__dict__,json_outfile, ensure_ascii=False, default=str)
-            # json.dump(elem.__dict__, json_outfile, default=str, separators=(',', ':'))
-            
-            # jsonString = json.dumps(elem.__dict__,default=str)
-            # json_outfile.write(jsonString)
-            # print(elem.__dict__['neo'])
-
-            # json_list.append(elem.__dict__)
-       
-        # rename dictionary keys
-        new_dict_keys = []
-        key_map = {'time': 'datetime_utc', 
-                    'neo': 'neo', 
-           '_designation': 'designation', 
-               'distance': 'distance_au', 
-               'velocity': 'velocity_km_s'} 
-
-        # for i in range(len(json_list)):
-        #     # d1 = dict(zip(list(json_list[i].keys()), fieldnames))
-        #     # json_list[i] = json_list[i].serialize()
-
-        #     # json_list[i]['time'] = str(json_list[i]['time'])
-        #     # json_list[i]['time'] = datetime.datetime.strptime(json_list[i]['time'], '%Y-%m-%d %H:%M')
-        #     json_list[i]['time'] = datetime_to_str(json_list[i]['time'])
-        #     new_dict_keys.append({key_map[old_key]: value for old_key, value in json_list[i].items()})
-    
-        # json.dump(new_dict_keys, json_outfile, indent=4, default=str)
         for elem in results:
             print(elem.__dict__['neo'])
             result_dict = dict(datetime_utc=datetime_to_str(elem.__dict__['time']), distance_au=elem.__dict__['distance'],
