@@ -12,7 +12,7 @@ You'll edit this file in Part 4.
 """
 import csv
 import json
-
+from helpers import datetime_to_str
 
 def write_to_csv(results, filename):
     """Write an iterable of `CloseApproach` objects to a CSV file.
@@ -30,11 +30,6 @@ def write_to_csv(results, filename):
     )
     field_names = {'time': 'datetime_utc', 'distance': 'distance_au', 'velocity': 'velocity_km_s', '_designation': 'designation', 'name': 'name', 'diameter': 'diameter_km', 'hazardous': 'potentially_hazardous'}
 
-    # field_names = (
-    #     'time', 'distance', 'velocity',
-    #     '_designation', 'name', 'diameter', 'hazardous', 'neo'
-    # )
-    # if results == None or results == '':
     if not results:
         with open(filename, 'w') as csv_outfile:
             writer = csv.writer(csv_outfile)
@@ -47,7 +42,6 @@ def write_to_csv(results, filename):
         writer.writerow(field_names)
 
         for elem in results:
-            print(elem.__dict__)
             writer.writerow(elem.__dict__)
 
 def write_to_json(results, filename):
@@ -68,24 +62,46 @@ def write_to_json(results, filename):
 
     # TODO: Write the results to a JSON file, following the specification in the instructions.
     json_list = []
-    with open(filename, 'w', encoding='utf8') as json_outfile:
-        for elem in results:
+    with open(filename, 'w') as json_outfile:
+        # for elem in results:
             # json_outfile.write(json.dumps(elem.__dict__, default=str))
             # json.dump(elem.__dict__,json_outfile, ensure_ascii=False, default=str)
             # json.dump(elem.__dict__, json_outfile, default=str, separators=(',', ':'))
             
             # jsonString = json.dumps(elem.__dict__,default=str)
             # json_outfile.write(jsonString)
-            
-            json_list.append(elem.__dict__)
-        # rename dictionary keys
-        # print(json_list)
-        new_dict = []
-        d1 = dict(zip(list(json_list[0].keys()), fieldnames))
-        for i in range(len(json_list)):
-            # d1 = dict(zip(list(json_list[i].keys()), fieldnames))
-            new_dict.append({d1[old_key]: value for old_key, value in json_list[i].items()})
+            # print(elem.__dict__['neo'])
 
-        json.dump(new_dict, json_outfile, indent=4, default=str)
+            # json_list.append(elem.__dict__)
+       
+        # rename dictionary keys
+        new_dict_keys = []
+        key_map = {'time': 'datetime_utc', 
+                    'neo': 'neo', 
+           '_designation': 'designation', 
+               'distance': 'distance_au', 
+               'velocity': 'velocity_km_s'} 
+
+        # for i in range(len(json_list)):
+        #     # d1 = dict(zip(list(json_list[i].keys()), fieldnames))
+        #     # json_list[i] = json_list[i].serialize()
+
+        #     # json_list[i]['time'] = str(json_list[i]['time'])
+        #     # json_list[i]['time'] = datetime.datetime.strptime(json_list[i]['time'], '%Y-%m-%d %H:%M')
+        #     json_list[i]['time'] = datetime_to_str(json_list[i]['time'])
+        #     new_dict_keys.append({key_map[old_key]: value for old_key, value in json_list[i].items()})
+    
+        # json.dump(new_dict_keys, json_outfile, indent=4, default=str)
+        for elem in results:
+            print(elem.__dict__['neo'])
+            result_dict = dict(datetime_utc=datetime_to_str(elem.__dict__['time']), distance_au=elem.__dict__['distance'],
+                velocity_km_s=elem.__dict__['velocity'], neo={
+                "designation": elem.__dict__['neo'].designation,
+                "name": elem.__dict__['neo'].name,
+                "diameter_km": elem.__dict__['neo'].diameter,
+                "potentially_hazardous": elem.__dict__['neo'].hazardous
+            })
+            json_list.append(result_dict)
+        json.dump(json_list, json_outfile, indent=4)
 
 
