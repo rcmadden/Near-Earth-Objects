@@ -39,12 +39,10 @@ class NEODatabase:
         :param neos: A collection of `NearEarthObject`s.
         :param approaches: A collection of `CloseApproach`es.
         """
-        self._neos = neos #distinct 23,967
-        self._approaches = approaches #distinct 23,424
-        # TODO: What additional auxiliary data structures will be useful?
+        self._neos = neos 
+        self._approaches = approaches 
 
-        # TODO: Link together the NEOs and their close approaches.
-        # TODO: Uncomment to get un-filtered set for submission/comment for running
+        # Link together the NEOs and their close approaches.
         for x in range(len(self._approaches)):
             for i in range(len(self._neos)):
                 if self._neos[i].designation == self._approaches[x]._designation:
@@ -65,24 +63,15 @@ class NEODatabase:
         :param designation: The primary designation of the NEO to search for.
         :return: The `NearEarthObject` with the desired primary designation, or `None`.
         """
-        # TODO: Fetch an NEO by its primary designation.
+        # Fetch an NEO by its primary designation.
         neo_by_designation = ''
-        #COMMENT
-        # approaches_by_designation = []
+        
         for i in range(len(self._neos)):
             if self._neos[i].designation == designation:
                 neo_by_designation = self._neos[i]
-        # COMMENT
-        # for x in range(len(self._approaches)):
-        #     if self._approaches[x]._designation == designation:
-        #         approaches_by_designation.append(self._approaches[x])
 
         if neo_by_designation=='' or neo_by_designation == None:
            return None
-        # COMMENT
-        # neo_by_designation.approaches = approaches_by_designation
-        # for i in range(len(approaches_by_designation)):
-        #     approaches_by_designation[i].neo = neo_by_designation
 
         return neo_by_designation
         
@@ -103,26 +92,16 @@ class NEODatabase:
         """
 
         
-        # TODO: Fetch an NEO by its name.
+        # Fetch an NEO by its name.
         neo_by_name = ''
-        approaches_by_name = []
         for i in range(len(self._neos)):
             if self._neos[i].name == name:
                 neo_by_name = self._neos[i]
-        #COMMENT
-        # for x in range(len(self._approaches)):
-        #     if self._approaches[x]._designation == neo_by_name.designation:
-        #         approaches_by_name.append(self._approaches[x])
-
+       
         if neo_by_name=='' or neo_by_name == None:
            return None
-        #COMMENT
-        # neo_by_name.approaches = approaches_by_name
-        # for i in range(len(approaches_by_name)):
-        #     approaches_by_name[i].neo = neo_by_name
-    
-
-        return neo_by_name        
+            
+        return neo_by_name    
 
     def query(self, filters=()):
         """Query close approaches to generate those that match a collection of filters.
@@ -138,13 +117,12 @@ class NEODatabase:
         :param filters: A collection of filters capturing user-specified criteria.
         :return: A stream of matching `CloseApproach` objects.
         """
-        # TODO: Generate `CloseApproach` objects that match all of the filters.
+        # Generate `CloseApproach` objects that match all of the filters.
         self.filters = filters
 
         for approach in self._approaches:
             if self.filters['date'] and self.filters['date'] != datetime.date(approach.time):
                 continue
-            # if self.filters['start_date'] and (self.filters['start_date'] >= datetime.date(approach.time)):
             if self.filters['start_date'] and not (self.filters['start_date'] <= datetime.date(approach.time)):
                 continue            
             if self.filters['end_date'] and not (self.filters['end_date'] >= datetime.date(approach.time)):
@@ -158,13 +136,6 @@ class NEODatabase:
             if self.filters['velocity_max'] and not self.filters['velocity_max'] >= float(approach.velocity):
                 continue 
             
-            # ELABORATE assign the aproaches.neo key to the matching neo['designation']
-            # carefull there are 400k self._approaches so get the filtered set first 
-            # need the neo key for the 3 filters that follow
-            # approach_neo = ([x for x in self._neos if x.designation == approach._designation])
-            # list comprehension (instead of dict comprehension) to avoid TypeError: unhashable type: 'dict'
-            # approach.neo = approach_neo[0]
-            # print(approach.neo)
             if self.filters['diameter_min'] and approach.neo.diameter != '':
                 if not (self.filters['diameter_min'] <= float(approach.neo.diameter)):
                     continue  
@@ -177,6 +148,6 @@ class NEODatabase:
                 continue  
             if self.filters.get('hazardous')==False and not approach.neo.hazardous == False:
                 continue   
-
+            
             yield approach
 
