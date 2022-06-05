@@ -1,4 +1,5 @@
 # Explore Close Approaches of Near-Earth Objects
+This is my completed project built from the requirements below and [code reviewed by Udacity](https://github.com/rcmadden/cd0010-advanced-python-techniques-project-starter/blob/solution-refactor/notes/NEO%20Udacity%20Code%20Review.pdf).
 
 In this project, you'll use Python - and the skills we've developed throughout this course - to search for and explore close approaches of near-Earth objects (NEOs), using data from NASA/JPL's Center for Near Earth Object Studies.
 
